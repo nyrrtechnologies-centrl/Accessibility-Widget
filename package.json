@@ -1,0 +1,29 @@
+{
+  "name": "accessibility-widget",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "> A lightweight, dependency-free, embeddable accessibility widget for any website. Packed with Text-to-Speech, AI Page Summaries, Dyslexia-friendly fonts, Reading Ruler, Zoom, High Contrast Modes, Page Q&A, and interactive text controls.",
+  "main": "index.js",
+  
+"scripts": {
+  "build:js": "node build.js",
+  "build:css": "cleancss -o dist/accessibility-widget.css src/accessibility-widget.css",
+  "build": "npm run build:js && npm run build:css",
+  "watch": "node build.js --watch"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyrrtechnologies-centrl/Accessibility-Widget.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nyrrtechnologies-centrl/Accessibility-Widget/issues"
+  },
+  "homepage": "https://github.com/nyrrtechnologies-centrl/Accessibility-Widget#readme",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "esbuild": "^0.28.1"
+  }
+}
