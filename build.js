@@ -32,4 +32,20 @@ run().catch((err) => {
   process.exit(1);
 });
 
+async function run() {
+  if (isWatch) {
+    const ctx = await esbuild.context(buildOptions);
+    await ctx.watch();
+    console.log('Watching for changes...');
+  } else {
+    await esbuild.build(buildOptions);
+    console.log('Build complete → dist/');
+  }
+
+  // Copy Cloudflare Pages headers file into dist/
+  const fs = require('fs');
+  fs.copyFileSync('public-embed/_headers', 'dist/_headers');
+  console.log('Copied _headers → dist/');
+};
+
 //test

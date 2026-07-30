@@ -1,0 +1,8 @@
+/widget-core.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+/widget-ui.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+/accessibility-widget.css
+  Cache-Control: public, max-age=300, must-revalidate
