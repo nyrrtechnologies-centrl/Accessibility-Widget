@@ -7,8 +7,10 @@ const buildOptions = {
   entryPoints: [
     'src/widget-core.js',
     'src/widget-ui.js',
+    'public-embed/loader.js',
   ],
   outdir: 'dist',
+  entryNames: '[name]',
   minify: true,
   bundle: false,      // set true later if you split code across multiple modules
   sourcemap: false,   // keep false for production — a sourcemap would expose readable source
