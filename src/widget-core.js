@@ -1,10 +1,18 @@
 // ============================================================
-//  AccessKit Widget — Core Engine (Part 1)
+//  Accessibility Assistant Widget — Core Engine (Part 1)
 //  Self-contained accessibility features
 // ============================================================
 (function (W) {
   'use strict';
-  if (W.__ak && W.__ak._v === 3) return;
+  if (W.__ak && W.__ak._v === 4) return;
+
+  // ─── Root resolution ──────────────────────────────────────
+  // The UI script mounts the widget inside a closed shadow root and
+  // calls setRoot() with that shadow root once it's created. Until
+  // then, ROOT falls back to document so early calls don't throw.
+  let ROOT = document;
+  function setRoot(r) { ROOT = r || document; }
+  function $(id) { return ROOT.getElementById(id); }
 
   // ─── State ────────────────────────────────────────────────
   const S = {
@@ -32,6 +40,7 @@
     focusRingOn: false,
     cursorSize: 'normal',   // normal | large | xl
     animationsOff: false,
+    theme: 'dark',          // dark | light — widget UI theme only
   };
 
   // ─── Persist / restore ────────────────────────────────────
@@ -46,6 +55,7 @@
         highlightHeadings: S.highlightHeadings, hideImages: S.hideImages,
         focusRingOn: S.focusRingOn, cursorSize: S.cursorSize,
         animationsOff: S.animationsOff, mistralKey: S.mistralKey,
+        theme: S.theme,
       }));
     } catch(e) {}
   }
@@ -59,12 +69,27 @@
 
   // ─── Toast ────────────────────────────────────────────────
   function toast(msg, dur = 2800) {
-    let el = document.getElementById('ak-toast');
+    let el = $('ak-toast');
     if (!el) return;
     el.textContent = msg;
     el.classList.add('ak-show');
     clearTimeout(el._t);
     el._t = setTimeout(() => el.classList.remove('ak-show'), dur);
+  }
+
+  // ─── Theme ────────────────────────────────────────────────
+  function applyTheme() {
+    const shell = $('ak-shell');
+    if (shell) shell.setAttribute('data-ak-theme', S.theme);
+  }
+  function setTheme(theme) {
+    S.theme = (theme === 'light') ? 'light' : 'dark';
+    applyTheme();
+    toast('Theme: ' + S.theme);
+    save();
+  }
+  function toggleTheme() {
+    setTheme(S.theme === 'light' ? 'dark' : 'light');
   }
 
   // ─── Speech Synthesis ─────────────────────────────────────
@@ -109,9 +134,9 @@
     stopSpeaking();
     S.readingOn = true;
 
-    const bar = document.getElementById('ak-read-progress');
-    const fill = document.getElementById('ak-read-progress-fill');
-    const label = document.getElementById('ak-read-progress-label');
+    const bar = $('ak-read-progress');
+    const fill = $('ak-read-progress-fill');
+    const label = $('ak-read-progress-label');
     bar.style.display = 'block';
     label.style.display = 'block';
 
@@ -123,7 +148,7 @@
       if (!S.readingOn) return cleanup();
       if (i >= paras.length) {
         fill.style.width = '100%';
-        label.textContent = '✓ Done';
+        label.textContent = 'Done';
         setTimeout(cleanup, 3000);
         return;
       }
@@ -153,8 +178,8 @@
 
   function stopReadWithProgress() {
     S.readingOn = false;
-    const bar = document.getElementById('ak-read-progress');
-    const label = document.getElementById('ak-read-progress-label');
+    const bar = $('ak-read-progress');
+    const label = $('ak-read-progress-label');
     if (bar) bar.style.display = 'none';
     if (label) label.style.display = 'none';
   }
@@ -165,21 +190,21 @@
     if (S.sectionOn) { _sectionCleanup && _sectionCleanup(); return; }
     S.sectionOn = true;
     document.body.style.cursor = 'crosshair';
-    const tip = document.getElementById('ak-section-tip');
+    const tip = $('ak-section-tip');
     if (tip) { tip.style.display = 'block'; tip.textContent = 'Click any element to read it — ESC to cancel'; }
 
     let hovered = null;
     const onMove = (e) => {
       if (hovered) hovered.style.outline = hovered._prevOutline || '';
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (el && el !== document.body && !el.closest('#ak-panel') && !el.closest('#ak-fab')) {
+      if (el && el !== document.body && !el.closest('#ak-host')) {
         hovered = el;
         el._prevOutline = el.style.outline;
         el.style.outline = '2px solid #F05A00';
       } else { hovered = null; }
     };
     const onClick = (e) => {
-      if (e.target.closest('#ak-panel') || e.target.closest('#ak-fab')) return;
+      if (e.target.closest('#ak-host')) return;
       e.preventDefault(); e.stopPropagation();
       const txt = (e.target.innerText || e.target.textContent || '').trim();
       speak(txt || 'No readable text in this element.');
@@ -205,10 +230,9 @@
   }
 
   // ─── Reading Ruler ────────────────────────────────────────
-  const _ruler = { el: null };
   function toggleRuler() {
     S.rulerOn = !S.rulerOn;
-    const el = document.getElementById('ak-ruler');
+    const el = $('ak-ruler');
     if (!el) return;
     el.style.display = S.rulerOn ? 'block' : 'none';
     if (S.rulerOn) {
@@ -220,7 +244,7 @@
     save();
   }
   function moveRuler(e) {
-    const el = document.getElementById('ak-ruler');
+    const el = $('ak-ruler');
     if (el) el.style.top = (e.clientY - 18) + 'px';
   }
 
@@ -287,7 +311,7 @@
   let _dyslexicStyle = null;
   function toggleDyslexic() {
     S.dyslexicOn = !S.dyslexicOn;
-    const panel = document.getElementById('ak-panel');
+    const panel = $('ak-panel');
     if (S.dyslexicOn) {
       if (!_dyslexicStyle) {
         _dyslexicStyle = document.createElement('style');
@@ -312,7 +336,7 @@
       if (!_linkStyle) {
         _linkStyle = document.createElement('style');
         _linkStyle.id = '__ak_links';
-        _linkStyle.textContent = `a:not(#ak-panel a){outline:2px solid #60a5fa!important;background:rgba(96,165,250,0.1)!important;border-radius:2px!important;}`;
+        _linkStyle.textContent = `a{outline:2px solid #60a5fa!important;background:rgba(96,165,250,0.1)!important;border-radius:2px!important;}`;
         document.head.appendChild(_linkStyle);
       }
     } else { _linkStyle && _linkStyle.remove(); _linkStyle = null; }
@@ -344,7 +368,7 @@
       if (!_imgStyle) {
         _imgStyle = document.createElement('style');
         _imgStyle.id = '__ak_imgs';
-        _imgStyle.textContent = `img,picture,figure,video,svg:not(#ak-panel svg):not(#ak-fab svg){visibility:hidden!important;}`;
+        _imgStyle.textContent = `img,picture,figure,video,svg{visibility:hidden!important;}`;
         document.head.appendChild(_imgStyle);
       }
     } else { _imgStyle && _imgStyle.remove(); _imgStyle = null; }
@@ -417,7 +441,7 @@
   // ─── Page Text / Sections ─────────────────────────────────
   function getPageText() {
     const clone = document.body.cloneNode(true);
-    clone.querySelectorAll('script,style,noscript,svg,#ak-panel,#ak-fab').forEach(el => el.remove());
+    clone.querySelectorAll('script,style,noscript,svg').forEach(el => el.remove());
     return (clone.innerText || clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 6000);
   }
 
@@ -486,6 +510,7 @@
 
   // ─── Apply saved state on load ────────────────────────────
   function applyAll() {
+    applyTheme();
     if (S.contrastMode && S.contrastMode !== 'none') setContrast(S.contrastMode);
     if (S.dyslexicOn) toggleDyslexic();
     if (S.zoomLevel !== 1) document.body.style.zoom = S.zoomLevel;
@@ -497,19 +522,21 @@
     if (S.animationsOff) toggleAnimations();
     if (S.lineSpacing !== 'normal' || S.letterSpacing !== 'normal' || S.wordSpacing !== 'normal') applySpacing();
     if (S.rulerOn) {
-      const el = document.getElementById('ak-ruler');
+      const el = $('ak-ruler');
       if (el) { el.style.display = 'block'; document.addEventListener('mousemove', moveRuler); }
     }
   }
 
   // ─── Public API ───────────────────────────────────────────
   W.__ak = {
-    _v: 3, S,
+    _v: 4, S,
+    setRoot,
     speak, stopSpeaking, readPage, readWithProgress, toggleSectionRead,
     toggleRuler, setContrast, zoomIn, zoomOut, zoomReset, setZoom,
     fontUp, fontDown, fontReset, setFontSize,
     applySpacing, toggleDyslexic, toggleHighlightLinks, toggleHighlightHeadings,
     toggleHideImages, toggleAnimations, toggleFocusRing, setCursor,
+    setTheme, toggleTheme,
     simplifyPage, getPageText, getPageSections,
     aiSummarize, aiAnswer, aiSimplifyText, callMistral,
     save, load, applyAll, toast,

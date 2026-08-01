@@ -1,29 +1,76 @@
 /* ============================================================
-   AccessKit Widget — Embeddable Accessibility Widget
+   Accessibility Assistant Widget — Embeddable Accessibility Widget
    Self-contained CSS — all selectors namespaced with .ak-
+
+   THEME ISOLATION NOTE:
+   All theme/appearance variables are declared on #ak-shell — an
+   element that lives *inside* the widget's closed shadow root —
+   rather than on :host. Host-page CSS can select the shadow host
+   element itself, but it has no selector that reaches past the
+   shadow boundary to #ak-shell or anything inside it, so a website
+   cannot restyle, retheme, or override the widget's appearance.
+   Only this stylesheet controls how the widget looks.
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=OpenDyslexic&display=swap');
 
-:root {
+/* Baseline reset for the shadow host box itself. A page can still
+   set layout properties (e.g. display:none) on the host element —
+   that's an unavoidable property of any DOM node a page can select —
+   but it cannot reach anything past this boundary. */
+:host {
+  all: initial;
+  display: block;
+}
+
+/* ── Theme tokens (scoped to an internal, unreachable element) ── */
+#ak-shell {
+  /* accent stays consistent across both themes */
   --ak-orange: #F05A00;
   --ak-orange-h: #D44E00;
   --ak-orange-dim: rgba(240,90,0,0.12);
   --ak-orange-mid: rgba(240,90,0,0.22);
-  --ak-bg: #0f1014;
-  --ak-bg2: #181a1e;
-  --ak-bg3: #21242a;
-  --ak-bg4: #2a2d35;
-  --ak-border: rgba(255,255,255,0.07);
+  --ak-r: 10px;
+  --ak-rs: 6px;
+
+  /* dark theme (default) — textured grayish-black, white text */
+  --ak-bg: #111214;
+  --ak-bg2: #1a1b1e;
+  --ak-bg3: #232428;
+  --ak-bg4: #2c2e33;
+  --ak-border: rgba(255,255,255,0.08);
   --ak-border-o: rgba(240,90,0,0.3);
-  --ak-text: #eaeaea;
-  --ak-muted: #7a7e88;
-  --ak-dim: #484c55;
+  --ak-text: #f2f2f3;
+  --ak-muted: #8a8d93;
+  --ak-dim: #4b4e54;
   --ak-green: #4ade80;
   --ak-red: #f87171;
   --ak-blue: #60a5fa;
-  --ak-r: 10px;
-  --ak-rs: 6px;
+  --ak-panel-texture:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.035) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(255,255,255,0.025) 0%, transparent 45%),
+    radial-gradient(circle at 40% 85%, rgba(255,255,255,0.02) 0%, transparent 50%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+}
+
+/* light theme — sleek marble grey, black text */
+#ak-shell[data-ak-theme="light"] {
+  --ak-bg: #ebedee;
+  --ak-bg2: #f4f5f6;
+  --ak-bg3: #e2e4e6;
+  --ak-bg4: #d4d7da;
+  --ak-border: rgba(0,0,0,0.09);
+  --ak-border-o: rgba(240,90,0,0.35);
+  --ak-text: #16181a;
+  --ak-muted: #5a5f65;
+  --ak-dim: #a4a9ae;
+  --ak-green: #16a34a;
+  --ak-red: #dc2626;
+  --ak-blue: #2563eb;
+  --ak-panel-texture:
+    linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.015) 35%, rgba(255,255,255,0.5) 65%, rgba(0,0,0,0.02) 100%),
+    radial-gradient(circle at 25% 15%, rgba(0,0,0,0.025) 0%, transparent 45%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.5) 0%, transparent 50%);
 }
 
 /* ── FAB Trigger ── */
@@ -84,7 +131,8 @@
   right: 28px;
   width: 340px;
   max-height: 84vh;
-  background: var(--ak-bg);
+  background-color: var(--ak-bg);
+  background-image: var(--ak-panel-texture);
   border: 1px solid var(--ak-border-o);
   border-radius: var(--ak-r);
   box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(240,90,0,0.08);
@@ -128,9 +176,10 @@
 .ak-icon-btn {
   background: none; border: none; color: var(--ak-muted);
   cursor: pointer; padding: 5px 6px; border-radius: 5px;
-  font-size: 14px; line-height: 1; transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-family: inherit; font-weight: 600; line-height: 1; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
 }
+.ak-icon-btn svg { width: 14px; height: 14px; }
 .ak-icon-btn:hover { background: var(--ak-bg3); color: var(--ak-text); }
 .ak-icon-btn:focus-visible { outline: 2px solid var(--ak-orange); }
 
@@ -155,7 +204,6 @@
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   white-space: nowrap;
 }
-.ak-tab span.ak-tab-icon { font-size: 15px; }
 .ak-tab:hover { color: var(--ak-text); }
 .ak-tab.ak-active { color: var(--ak-orange); border-bottom-color: var(--ak-orange); }
 
@@ -211,7 +259,6 @@
   content: ''; position: absolute; top: 5px; right: 5px;
   width: 5px; height: 5px; border-radius: 50%; background: var(--ak-orange);
 }
-.ak-feat-icon { font-size: 18px; line-height: 1; }
 .ak-feat-stop { border-color: rgba(248,113,113,0.25); }
 .ak-feat-stop:hover { border-color: rgba(248,113,113,0.6)!important; background: rgba(248,113,113,0.08)!important; }
 
@@ -414,7 +461,7 @@
 }
 #ak-read-progress-label {
   position: fixed; top: 8px; right: 16px;
-  background: rgba(15,16,20,0.9); color: var(--ak-orange);
+  background: var(--ak-bg2); color: var(--ak-orange);
   font-family: 'Inter',sans-serif; font-size: 11px;
   padding: 3px 9px; border-radius: 20px; z-index: 2147483646;
   pointer-events: none; display: none; border: 1px solid var(--ak-border-o);
@@ -427,11 +474,7 @@
   z-index: 2147483644; display: none;
   border-top: 1px solid rgba(240,90,0,0.35);
   border-bottom: 1px solid rgba(240,90,0,0.35);
-  backdrop-filter: blur(0px);
 }
-
-/* ── Focus Indicator ── */
-.ak-focus-ring { outline: 3px solid var(--ak-orange) !important; outline-offset: 2px !important; }
 
 /* ── Toast ── */
 #ak-toast {
@@ -448,7 +491,7 @@
 /* ── Section Selection overlay info ── */
 #ak-section-tip {
   position: fixed; bottom: 24px; left: 24px;
-  background: rgba(15,16,20,0.92); color: var(--ak-text);
+  background: var(--ak-bg2); color: var(--ak-text);
   font-family: 'Inter',sans-serif; font-size: 12px;
   padding: 8px 14px; border-radius: 8px; border: 1px solid var(--ak-border-o);
   z-index: 2147483646; pointer-events: none; display: none;
@@ -460,31 +503,16 @@
 }
 .ak-kbd {
   display: inline-flex; align-items: center; gap: 3px;
-  background: var(--ak-bg3); border: 1px solid rgba(255,255,255,0.12);
+  background: var(--ak-bg3); border: 1px solid var(--ak-border);
   border-radius: 4px; padding: 2px 6px; font-size: 10px; color: var(--ak-muted);
 }
 
 /* ── Animations ── */
-@keyframes ak-pulse {
-  0%,100% { opacity:1; } 50% { opacity:0.4; }
-}
 @keyframes ak-slidein {
   from { opacity:0; transform: translateY(12px) scale(0.97); }
   to   { opacity:1; transform: translateY(0) scale(1); }
 }
 #ak-panel.ak-open { animation: ak-slidein 0.22s cubic-bezier(.34,1.4,.64,1); }
-
-/* ── Dyslexia friendly mode applied to host page ── */
-body.ak-dyslexic-page,
-body.ak-dyslexic-page p,
-body.ak-dyslexic-page li,
-body.ak-dyslexic-page span,
-body.ak-dyslexic-page div {
-  font-family: 'OpenDyslexic', Arial, sans-serif !important;
-  letter-spacing: 0.05em !important;
-  word-spacing: 0.15em !important;
-  line-height: 1.8 !important;
-}
 
 /* ── Responsive ── */
 @media (max-width: 400px) {
