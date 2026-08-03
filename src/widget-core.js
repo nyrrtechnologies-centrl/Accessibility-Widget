@@ -78,19 +78,19 @@
   }
 
   // ─── Theme (light / dark UI mode) ─────────────────────────
-  function applyTheme() {
-    const shell = $('ak-shell');
-    if (shell) shell.setAttribute('data-ak-theme', S.theme);
-  }
-  function setTheme(theme) {
-    S.theme = (theme === 'light') ? 'light' : 'dark';
-    applyTheme();
-    toast('Theme: ' + S.theme);
-    save();
-  }
-  function toggleTheme() {
-    setTheme(S.theme === 'light' ? 'dark' : 'light');
-  }
+  //function applyTheme() {
+  //  const shell = $('ak-shell');
+  //  if (shell) shell.setAttribute('data-ak-theme', S.theme);
+  //}
+  //function setTheme(theme) {
+  //  S.theme = (theme === 'light') ? 'light' : 'dark';
+  //  applyTheme();
+  //  toast('Theme: ' + S.theme);
+  //  save();
+  //}
+  //function toggleTheme() {
+  //  setTheme(S.theme === 'light' ? 'dark' : 'light');
+  //}
 
   // ─── Brand Theme (per-client colour + position) ───────────
   // This is distinct from the light/dark UI theme above. It's driven
