@@ -12,7 +12,11 @@ const _thisScript = document.currentScript;
 function resolveCssUrl(){
   try {
     const src = _thisScript && _thisScript.src;
-    if(src) return src.replace(/widget-ui\.js(\?.*)?(#.*)?$/, 'accessibility-widget.css');
+    if(src) {
+      const url = new URL(src, window.location.href);
+      url.pathname = url.pathname.replace(/widget-ui\.js$/, 'accessibility-widget.css');
+      return url.href;
+    }
   } catch(e){}
   return 'accessibility-widget.css';
 }

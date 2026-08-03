@@ -11,6 +11,11 @@
   // Replace with your actual deployed URLs.
   var VERIFY_URL = 'https://widget-verify.nyrrtechnologies.workers.dev';   
   var CDN_BASE   = 'https://cdn.scryweb.com';   // Pages CDN from Step 3
+  var ASSET_VERSION = '5';
+
+  function assetUrl(path) {
+    return CDN_BASE + '/' + path + '?v=' + ASSET_VERSION;
+  }
 
   function normalizeThemeConfig(result) {
     if (result.theme && typeof result.theme === 'object') {
@@ -56,14 +61,21 @@
   function loadWidget() {
     var css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = CDN_BASE + '/accessibility-widget.css';
+    css.href = assetUrl('accessibility-widget.css');
     document.head.appendChild(css);
 
     var core = document.createElement('script');
-    core.src = CDN_BASE + '/widget-core.js';
+    core.src = assetUrl('widget-core.js');
     core.onload = function () {
       var ui = document.createElement('script');
-      ui.src = CDN_BASE + '/widget-ui.js';
+      ui.src = assetUrl('widget-ui.js');
+      ui.onload = function () {
+        // Apply once more after the shadow DOM exists. This makes the
+        // config handoff explicit and avoids initialization-order races.
+        if (window.__ak && window.__WIDGET_CONFIG__) {
+          window.__ak.applyBrandTheme(window.__WIDGET_CONFIG__.theme);
+        }
+      };
       document.body.appendChild(ui);
     };
     document.body.appendChild(core);
