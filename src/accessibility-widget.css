@@ -24,8 +24,14 @@
 }
 
 /* ── Theme tokens (scoped to an internal, unreachable element) ── */
+/* NOTE: --ak-orange / --ak-orange-h / --ak-orange-dim / --ak-orange-mid
+   are also the per-client brand theming hook. widget-core.js's
+   applyBrandTheme() overrides these four inline on #ak-shell based on
+   config supplied by the loader (window.__WIDGET_CONFIG__.theme), so a
+   client's chosen preset/custom color flows through every place in this
+   file that references them — no per-client CSS needed. */
 #ak-shell {
-  /* accent stays consistent across both themes */
+  /* accent stays consistent across both themes, unless overridden per-client */
   --ak-orange: #F05A00;
   --ak-orange-h: #D44E00;
   --ak-orange-dim: rgba(240,90,0,0.12);
@@ -518,4 +524,31 @@
 @media (max-width: 400px) {
   #ak-panel { width: calc(100vw - 16px); right: 8px; bottom: 80px; }
   #ak-fab { bottom: 16px; right: 16px; }
+}
+
+/* ── Per-client position variant ──────────────────────────────
+   Set via widget-core.js's applyBrandTheme(), which puts
+   data-ak-position="bottom-left" (or leaves it unset/"bottom-right")
+   on #ak-shell based on the client's configured theme.position. */
+#ak-shell[data-ak-position="bottom-left"] #ak-fab {
+  right: auto;
+  left: 28px;
+}
+#ak-shell[data-ak-position="bottom-left"] #ak-fab-tooltip {
+  right: auto;
+  left: 28px;
+}
+#ak-shell[data-ak-position="bottom-left"] #ak-panel {
+  right: auto;
+  left: 28px;
+}
+@media (max-width: 400px) {
+  #ak-shell[data-ak-position="bottom-left"] #ak-panel {
+    right: auto;
+    left: 8px;
+  }
+  #ak-shell[data-ak-position="bottom-left"] #ak-fab {
+    right: auto;
+    left: 16px;
+  }
 }

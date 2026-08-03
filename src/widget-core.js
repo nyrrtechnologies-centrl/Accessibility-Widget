@@ -77,7 +77,7 @@
     el._t = setTimeout(() => el.classList.remove('ak-show'), dur);
   }
 
-  // ─── Theme ────────────────────────────────────────────────
+  // ─── Theme (light / dark UI mode) ─────────────────────────
   function applyTheme() {
     const shell = $('ak-shell');
     if (shell) shell.setAttribute('data-ak-theme', S.theme);
@@ -91,6 +91,60 @@
   function toggleTheme() {
     setTheme(S.theme === 'light' ? 'dark' : 'light');
   }
+
+  // ─── Brand Theme (per-client colour + position) ───────────
+  // This is distinct from the light/dark UI theme above. It's driven
+  // by server-side config (set via window.__WIDGET_CONFIG__ by the
+  // public loader script), not by user preference, so it always
+  // reflects what the embedding client is licensed/configured for.
+  const BRAND_PRESETS = {
+    default:  '#F05A00',
+    ocean:    '#2563eb',
+    midnight: '#7c3aed',
+    sunset:   '#f43f5e',
+  };
+
+  function hexToRgb(hex) {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+    if (!m) return null;
+    return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+  }
+  function shade(hex, amount) {
+    // amount: -1..1, negative = darker (toward black), positive = lighter (toward white)
+    const rgb = hexToRgb(hex);
+    if (!rgb) return hex;
+    const t = amount < 0 ? 0 : 255;
+    const p = Math.abs(amount);
+    const r = Math.round((t - rgb.r) * p + rgb.r);
+    const g = Math.round((t - rgb.g) * p + rgb.g);
+    const b = Math.round((t - rgb.b) * p + rgb.b);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+  function toRgba(hex, alpha) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return `rgba(240,90,0,${alpha})`;
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+  }
+
+  let _brandTheme = null;
+  function applyBrandTheme(themeConfig) {
+    _brandTheme = themeConfig || null;
+    const shell = $('ak-shell');
+    if (!shell) return;
+
+    const preset = (themeConfig && themeConfig.preset) || 'default';
+    const custom = themeConfig && themeConfig.customColor;
+    const color = (preset === 'custom' && custom) ? custom : (BRAND_PRESETS[preset] || BRAND_PRESETS.default);
+
+    shell.style.setProperty('--ak-orange', color);
+    shell.style.setProperty('--ak-orange-h', shade(color, -0.15));
+    shell.style.setProperty('--ak-orange-dim', toRgba(color, 0.12));
+    shell.style.setProperty('--ak-orange-mid', toRgba(color, 0.22));
+
+    const position = (themeConfig && themeConfig.position) || 'bottom-right';
+    shell.setAttribute('data-ak-position', position);
+  }
+  function getBrandTheme() { return _brandTheme; }
 
   // ─── Speech Synthesis ─────────────────────────────────────
   function getVoice() {
@@ -511,6 +565,7 @@
   // ─── Apply saved state on load ────────────────────────────
   function applyAll() {
     applyTheme();
+    applyBrandTheme((W.__WIDGET_CONFIG__ && W.__WIDGET_CONFIG__.theme) || null);
     if (S.contrastMode && S.contrastMode !== 'none') setContrast(S.contrastMode);
     if (S.dyslexicOn) toggleDyslexic();
     if (S.zoomLevel !== 1) document.body.style.zoom = S.zoomLevel;
@@ -537,6 +592,7 @@
     applySpacing, toggleDyslexic, toggleHighlightLinks, toggleHighlightHeadings,
     toggleHideImages, toggleAnimations, toggleFocusRing, setCursor,
     setTheme, toggleTheme,
+    applyBrandTheme, getBrandTheme,
     simplifyPage, getPageText, getPageSections,
     aiSummarize, aiAnswer, aiSimplifyText, callMistral,
     save, load, applyAll, toast,
