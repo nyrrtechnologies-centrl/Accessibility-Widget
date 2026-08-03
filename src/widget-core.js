@@ -105,7 +105,9 @@
   };
 
   function hexToRgb(hex) {
-    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+    const value = String(hex || '').replace(/^#/, '');
+    const expanded = value.length === 3 ? value.split('').map(char => char + char).join('') : value;
+    const m = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(expanded);
     if (!m) return null;
     return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
   }
@@ -125,24 +127,94 @@
     if (!rgb) return `rgba(240,90,0,${alpha})`;
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
   }
+  function readableTextColor(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return '#ffffff';
+    const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+    return luminance > 0.58 ? '#111214' : '#ffffff';
+  }
 
   let _brandTheme = null;
+  function getThemeModeValue(value) {
+    if (!value) return null;
+    const mode = String(value).trim().toLowerCase();
+    return (mode === 'light' || mode === 'dark') ? mode : null;
+  }
+  function pickThemeValue(source, keys) {
+    if (!source || typeof source !== 'object') return null;
+    for (const key of keys) {
+      const value = source[key];
+      if (typeof value === 'string' && value.trim()) return value.trim();
+      if (value != null && value !== '') return value;
+    }
+    return null;
+  }
+  function normalizeThemeConfig(themeConfig) {
+    if (!themeConfig) return null;
+    if (typeof themeConfig === 'string') {
+      const value = themeConfig.trim();
+      const mode = getThemeModeValue(value);
+      if (mode) return { mode };
+      if (/^#?([a-f\d]{3}|[a-f\d]{6})$/i.test(value)) {
+        return { preset: 'custom', customColor: value.startsWith('#') ? value : `#${value}` };
+      }
+      return { preset: value };
+    }
+    if (typeof themeConfig !== 'object' || Array.isArray(themeConfig)) return null;
+ 
+    const source = themeConfig.theme || themeConfig.themeConfig || themeConfig.brandTheme || themeConfig.config || themeConfig;
+    const normalized = (source && typeof source === 'object' && !Array.isArray(source)) ? source : { value: source };
+ 
+    const mode = getThemeModeValue(
+      pickThemeValue(normalized, ['mode', 'themeMode', 'theme_mode', 'theme', 'uiTheme', 'ui_theme']) ||
+      pickThemeValue(themeConfig, ['mode', 'themeMode', 'theme_mode', 'uiTheme', 'ui_theme'])
+    );
+    const preset = pickThemeValue(normalized, ['preset', 'themePreset', 'theme_preset', 'brandPreset', 'brand_preset']) ||
+      pickThemeValue(themeConfig, ['preset', 'themePreset', 'theme_preset', 'brandPreset', 'brand_preset']);
+    const customColor = pickThemeValue(normalized, ['customColor', 'custom_color', 'color', 'themeColor', 'theme_color', 'primaryColor', 'primary_color']) ||
+      pickThemeValue(themeConfig, ['customColor', 'custom_color', 'color', 'themeColor', 'theme_color', 'primaryColor', 'primary_color']);
+    const position = pickThemeValue(normalized, ['position', 'themePosition', 'theme_position']) ||
+      pickThemeValue(themeConfig, ['position', 'themePosition', 'theme_position']);
+    const logoUrl = pickThemeValue(normalized, ['logoUrl', 'logo_url', 'brandLogoUrl', 'brand_logo_url']) ||
+      pickThemeValue(themeConfig, ['logoUrl', 'logo_url', 'brandLogoUrl', 'brand_logo_url']);
+ 
+    return {
+      mode,
+      preset: preset || (customColor ? 'custom' : 'default'),
+      customColor: customColor || null,
+      position: position || 'bottom-right',
+      logoUrl: logoUrl || null,
+    };
+  }
   function applyBrandTheme(themeConfig) {
-    _brandTheme = themeConfig || null;
+    _brandTheme = normalizeThemeConfig(themeConfig);
     const shell = $('ak-shell');
     if (!shell) return;
-
-    const preset = (themeConfig && themeConfig.preset) || 'default';
-    const custom = themeConfig && themeConfig.customColor;
-    const color = (preset === 'custom' && custom) ? custom : (BRAND_PRESETS[preset] || BRAND_PRESETS.default);
-
+ 
+    const themeConfigNormalized = _brandTheme || {};
+    const preset = themeConfigNormalized.preset || 'default';
+    const custom = themeConfigNormalized.customColor;
+    const color = (preset === 'custom' && custom) ? custom : (custom || BRAND_PRESETS[preset] || BRAND_PRESETS.default);
+    const themeMode = themeConfigNormalized.mode || S.theme;
+ 
     shell.style.setProperty('--ak-orange', color);
     shell.style.setProperty('--ak-orange-h', shade(color, -0.15));
     shell.style.setProperty('--ak-orange-dim', toRgba(color, 0.12));
     shell.style.setProperty('--ak-orange-mid', toRgba(color, 0.22));
-
-    const position = (themeConfig && themeConfig.position) || 'bottom-right';
+    shell.style.setProperty('--ak-brand-soft', toRgba(color, 0.08));
+    shell.style.setProperty('--ak-brand-surface', toRgba(color, 0.16));
+    shell.style.setProperty('--ak-brand-border', toRgba(color, 0.42));
+    shell.style.setProperty('--ak-brand-glow', toRgba(color, 0.30));
+    shell.style.setProperty('--ak-on-brand', readableTextColor(color));
+ 
+    const position = themeConfigNormalized.position || 'bottom-right';
     shell.setAttribute('data-ak-position', position);
+    if (themeMode === 'light' || themeMode === 'dark') {
+      shell.setAttribute('data-ak-theme', themeMode);
+      S.theme = themeMode;
+    } else {
+      shell.setAttribute('data-ak-theme', S.theme);
+    }
   }
   function getBrandTheme() { return _brandTheme; }
 
@@ -599,4 +671,5 @@
   };
 
   load();
+  applyAll();
 }(window));

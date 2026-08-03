@@ -32,26 +32,52 @@ export default {
 
     // Normalize domains (strip www.) before comparing
     const normalizedDomain = domain.replace(/^www\./, '');
-    const allowed = client.allowed_domains.some(
-      (d) => d.replace(/^www\./, '') === normalizedDomain
-    );
+   const allowedDomains = Array.isArray(client.allowed_domains) ? client.allowed_domains : [];
+   const allowed = allowedDomains.some(
+     (d) => String(d).replace(/^www\./, '') === normalizedDomain
+   );
 
-    if (!allowed) {
-      return jsonResponse({ valid: false, reason: 'domain_mismatch' }, 403);
-    }
+   if (!allowed) {
+     return jsonResponse({ valid: false, reason: 'domain_mismatch' }, 403);
+   }
 
    return jsonResponse({
-  valid: true,
-  plan: client.plan,
-  theme: {
-    preset: client.theme_preset,
-    customColor: client.theme_preset === 'custom' ? client.theme_primary_color : null,
-    position: client.theme_position,
-    logoUrl: client.theme_logo_url,
-  },
-});
+     valid: true,
+     plan: client.plan,
+     theme: normalizeThemeConfig(client),
+   });
   },
 };
++
++function normalizeThemeConfig(client) {
++  const directTheme = typeof client.theme === 'string'
++    ? (() => {
++        try { return JSON.parse(client.theme); } catch (e) { return client.theme; }
++      })()
++    : client.theme;
++
++  if (directTheme && typeof directTheme === 'object') {
++    return directTheme;
++  }
++  if (directTheme && typeof directTheme === 'string') {
++    const value = directTheme.trim();
++    if (value === 'light' || value === 'dark') {
++      return { mode: value };
++    }
++    if (/^#?([a-f\d]{3}|[a-f\d]{6})$/i.test(value)) {
++      return { preset: 'custom', customColor: value.startsWith('#') ? value : `#${value}` };
++    }
++    return { preset: value };
++  }
++
++  return {
++    preset: client.theme_preset || client.themePreset || client.theme_preset_name || client.brand_theme_preset || client.brandPreset || null,
++    customColor: client.theme_primary_color || client.theme_primaryColour || client.theme_color || client.themeColor || client.custom_color || client.primary_color || null,
++    position: client.theme_position || client.themePosition || client.position || null,
++    mode: client.theme_mode || client.themeMode || client.ui_theme || client.default_theme || null,
++    logoUrl: client.theme_logo_url || client.themeLogoUrl || client.logo_url || client.logoUrl || null,
++  };
++}
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {

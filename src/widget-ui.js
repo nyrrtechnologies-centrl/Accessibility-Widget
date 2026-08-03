@@ -470,4 +470,5 @@ syncZoom(); syncFont();
 
 // Apply persisted state (includes theme)
 ak.applyAll();
+syncThemeBtn();
 })();

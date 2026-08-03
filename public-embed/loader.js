@@ -12,6 +12,25 @@
   var VERIFY_URL = 'https://widget-verify.nyrrtechnologies.workers.dev';   
   var CDN_BASE   = 'https://cdn.scryweb.com';   // Pages CDN from Step 3
 
+  function normalizeThemeConfig(result) {
+    if (result.theme && typeof result.theme === 'object') {
+     return result.theme;
+    }
+    if (result.themeConfig && typeof result.themeConfig === 'object') {
+     return result.themeConfig;
+    }
+    if (result.brandTheme && typeof result.brandTheme === 'object') {
+     return result.brandTheme;
+    }
+    if (result.theme && typeof result.theme === 'string') {
+     return { preset: result.theme };
+    }
+    if (result.themeMode || result.theme_mode) {
+     return { mode: result.themeMode || result.theme_mode };
+    }
+    return null;
+  }
+
   fetch(VERIFY_URL + '/?client_id=' + encodeURIComponent(clientId) + '&domain=' + encodeURIComponent(domain))
     .then(function (res) { return res.json(); })
     .then(function (result) {
@@ -19,14 +38,15 @@
         console.warn('[Widget] License check failed:', result.reason);
         return;
       }
-
+ 
       // Make the client's plan + theme available to widget-core.js,
       // which reads window.__WIDGET_CONFIG__.theme in applyAll().
       window.__WIDGET_CONFIG__ = {
-        plan: result.plan,
-        theme: result.theme || null, // { preset, customColor, position, logoUrl }
+        plan: result.plan || result.plan_name || null,
+        theme: normalizeThemeConfig(result),
+        raw: result,
       };
-
+ 
       loadWidget();
     })
     .catch(function (err) {
