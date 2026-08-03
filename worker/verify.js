@@ -44,12 +44,13 @@ export default {
   },
 };
 
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', // needed since client sites call this cross-origin
-    },
-  });
-}
+return jsonResponse({
+  valid: true,
+  plan: client.plan,
+  theme: {
+    preset: client.theme_preset,
+    customColor: client.theme_preset === 'custom' ? client.theme_primary_color : null,
+    position: client.theme_position,
+    logoUrl: client.theme_logo_url,
+  },
+});
