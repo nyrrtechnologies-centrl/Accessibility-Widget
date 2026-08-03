@@ -577,7 +577,7 @@
 body[data-a11y-theme="ocean"] {
   --a11y-widget-primary: #2563eb;
   --a11y-widget-primary-hover: #1d4ed8;
-  --a11y-widget-bg: #0b1220;
+  --ak-bg: #0b1220;
   --a11y-widget-text: #e0ecff;
 }
 
