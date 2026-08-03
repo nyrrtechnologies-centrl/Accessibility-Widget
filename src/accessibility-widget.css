@@ -552,3 +552,34 @@
     left: 16px;
   }
 }
+/* Default fallback */
+:root {
+  --a11y-widget-primary: #F05A00;
+  --a11y-widget-primary-hover: #d44e00;
+  --a11y-widget-bg: #0a0b0f;
+  --a11y-widget-text: #eaeaea;
+}
+
+/* Preset: Ocean */
+body[data-a11y-theme="ocean"] {
+  --a11y-widget-primary: #2563eb;
+  --a11y-widget-primary-hover: #1d4ed8;
+  --a11y-widget-bg: #0b1220;
+  --a11y-widget-text: #e0ecff;
+}
+
+/* Preset: Midnight */
+body[data-a11y-theme="midnight"] {
+  --a11y-widget-primary: #7c3aed;
+  --a11y-widget-primary-hover: #6d28d9;
+  --a11y-widget-bg: #0f0a1f;
+  --a11y-widget-text: #ece5ff;
+}
+
+/* Preset: Sunset */
+body[data-a11y-theme="sunset"] {
+  --a11y-widget-primary: #f43f5e;
+  --a11y-widget-primary-hover: #e11d48;
+  --a11y-widget-bg: #1a0b0f;
+  --a11y-widget-text: #ffe4e6;
+}
