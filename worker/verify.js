@@ -78,28 +78,64 @@ function normalizeThemeConfig(client) {
       })()
     : client.theme;
 
+  let theme = {};
+
   if (directTheme && typeof directTheme === 'object' && !Array.isArray(directTheme)) {
-    return directTheme;
+    theme = { ...directTheme };
   }
   if (typeof directTheme === 'string' && directTheme.trim()) {
     const value = directTheme.trim();
     const normalizedValue = value.toLowerCase();
     if (normalizedValue === 'light' || normalizedValue === 'dark') {
-      return { mode: normalizedValue };
+      theme.mode = normalizedValue;
+    } else if (/^#?([a-f\d]{3}|[a-f\d]{6})$/i.test(value)) {
+      theme.preset = 'custom';
+      theme.customColor = value.startsWith('#') ? value : `#${value}`;
+    } else {
+      theme.preset = normalizedValue;
     }
-    if (/^#?([a-f\d]{3}|[a-f\d]{6})$/i.test(value)) {
-      return { preset: 'custom', customColor: value.startsWith('#') ? value : `#${value}` };
-    }
-    return { preset: normalizedValue };
   }
 
-  return {
-    preset: client.theme_preset || client.themePreset || client.theme_preset_name || client.brand_theme_preset || client.brandPreset || null,
-    customColor: client.theme_primary_color || client.theme_primaryColour || client.theme_color || client.themeColor || client.custom_color || client.primary_color || null,
-    position: client.theme_position || client.themePosition || client.position || null,
-    mode: client.theme_mode || client.themeMode || client.ui_theme || client.default_theme || null,
-    logoUrl: client.theme_logo_url || client.themeLogoUrl || client.logo_url || client.logoUrl || null,
-  };
+  const preset = firstValue(client, [
+    'theme_preset', 'themePreset', 'theme_preset_name', 'brand_theme_preset', 'brandPreset',
+  ]);
+  const customColor = firstValue(client, [
+    'theme_primary_color', 'theme_primaryColour', 'theme_color', 'themeColor',
+    'custom_color', 'customColor', 'primary_color', 'primaryColor',
+  ]);
+  const position = firstValue(client, ['theme_position', 'themePosition', 'position']);
+  const mode = firstValue(client, ['theme_mode', 'themeMode', 'ui_theme', 'default_theme']);
+  const logoUrl = firstValue(client, [
+    'theme_logo_url', 'themeLogoUrl', 'logo_url', 'logoUrl', 'brand_logo_url', 'brandLogoUrl',
+  ]);
+
+  if (preset) theme.preset = String(preset).trim().toLowerCase();
+  if (customColor) {
+    theme.customColor = normalizeHexColor(customColor);
+    // A populated primary colour is itself sufficient to activate a custom theme.
+    if (!preset || theme.preset === 'default') theme.preset = 'custom';
+  }
+  if (position) theme.position = String(position).trim().toLowerCase();
+  if (mode) theme.mode = String(mode).trim().toLowerCase();
+  if (logoUrl) theme.logoUrl = String(logoUrl).trim();
+
+  return theme;
+}
+
+function firstValue(source, keys) {
+  for (const key of keys) {
+    const value = source[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (value !== null && value !== undefined && value !== '') return value;
+  }
+  return null;
+}
+
+function normalizeHexColor(value) {
+  const color = String(value).trim();
+  if (/^#([a-f\d]{3}|[a-f\d]{6})$/i.test(color)) return color;
+  if (/^([a-f\d]{3}|[a-f\d]{6})$/i.test(color)) return `#${color}`;
+  return color;
 }
 
 function corsHeaders() {
