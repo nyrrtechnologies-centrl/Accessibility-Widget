@@ -40,11 +40,7 @@ export default {
       return jsonResponse({ valid: false, reason: 'domain_mismatch' }, 403);
     }
 
-    return jsonResponse({ valid: true, plan: client.plan });
-  },
-};
-
-return jsonResponse({
+   return jsonResponse({
   valid: true,
   plan: client.plan,
   theme: {
@@ -54,3 +50,15 @@ return jsonResponse({
     logoUrl: client.theme_logo_url,
   },
 });
+  },
+};
+
+function jsonResponse(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', // needed since client sites call this cross-origin
+    },
+  });
+}
