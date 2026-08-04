@@ -36,6 +36,11 @@
   --ak-orange-h: #D44E00;
   --ak-orange-dim: rgba(240,90,0,0.12);
   --ak-orange-mid: rgba(240,90,0,0.22);
+  --ak-brand-soft: rgba(240,90,0,0.08);
+  --ak-brand-surface: rgba(240,90,0,0.16);
+  --ak-brand-border: rgba(240,90,0,0.42);
+  --ak-brand-glow: rgba(240,90,0,0.30);
+  --ak-on-brand: #ffffff;
   --ak-r: 10px;
   --ak-rs: 6px;
 
@@ -52,6 +57,10 @@
   --ak-green: #4ade80;
   --ak-red: #f87171;
   --ak-blue: #60a5fa;
+  --ak-panel-shadow: 0 24px 64px rgba(0,0,0,0.72), 0 0 0 1px var(--ak-brand-soft);
+  --ak-header-bg: linear-gradient(135deg, var(--ak-brand-surface), transparent 60%), #17181b;
+  --ak-tabs-bg: #141518;
+  --ak-control-bg: #1d1f23;
   --ak-panel-texture:
     radial-gradient(circle at 15% 10%, rgba(255,255,255,0.035) 0%, transparent 40%),
     radial-gradient(circle at 85% 30%, rgba(255,255,255,0.025) 0%, transparent 45%),
@@ -73,6 +82,10 @@
   --ak-green: #16a34a;
   --ak-red: #dc2626;
   --ak-blue: #2563eb;
+  --ak-panel-shadow: 0 24px 60px rgba(35,40,48,0.24), 0 3px 12px rgba(35,40,48,0.12), 0 0 0 1px var(--ak-brand-soft);
+  --ak-header-bg: linear-gradient(135deg, var(--ak-brand-surface), rgba(255,255,255,0.82) 68%), #ffffff;
+  --ak-tabs-bg: rgba(255,255,255,0.72);
+  --ak-control-bg: #ffffff;
   --ak-panel-texture:
     linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.015) 35%, rgba(255,255,255,0.5) 65%, rgba(0,0,0,0.02) 100%),
     radial-gradient(circle at 25% 15%, rgba(0,0,0,0.025) 0%, transparent 45%),
@@ -94,13 +107,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 24px rgba(240,90,0,0.45), 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 24px var(--ak-brand-glow), 0 1px 4px rgba(0,0,0,0.4);
   transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
   outline: none;
 }
 #ak-fab:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 32px rgba(240,90,0,0.6), 0 1px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 32px var(--ak-brand-glow), 0 1px 8px rgba(0,0,0,0.5);
 }
 #ak-fab:focus-visible {
   outline: 3px solid var(--ak-orange);
@@ -141,7 +154,7 @@
   background-image: var(--ak-panel-texture);
   border: 1px solid var(--ak-border-o);
   border-radius: var(--ak-r);
-  box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(240,90,0,0.08);
+  box-shadow: var(--ak-panel-shadow);
   z-index: 2147483641;
   display: none;
   flex-direction: column;
@@ -161,8 +174,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px 12px;
-  background: var(--ak-bg2);
-  border-bottom: 1px solid var(--ak-border-o);
+  background: var(--ak-header-bg);
+  border-bottom: 1px solid var(--ak-brand-border);
   flex-shrink: 0;
 }
 .ak-header-left {
@@ -176,7 +189,7 @@
   flex-shrink: 0;
 }
 .ak-logo svg { width: 16px; height: 16px; }
-.ak-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
+.ak-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; color: var(--ak-text); }
 .ak-subtitle { font-size: 10px; color: var(--ak-muted); margin-top: 1px; }
 .ak-header-actions { display: flex; gap: 4px; align-items: center; }
 .ak-icon-btn {
@@ -192,7 +205,7 @@
 /* ── Tab Bar ── */
 .ak-tabs {
   display: flex;
-  background: var(--ak-bg2);
+  background: var(--ak-tabs-bg);
   border-bottom: 1px solid var(--ak-border);
   flex-shrink: 0;
   overflow-x: auto;
@@ -210,8 +223,8 @@
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   white-space: nowrap;
 }
-.ak-tab:hover { color: var(--ak-text); }
-.ak-tab.ak-active { color: var(--ak-orange); border-bottom-color: var(--ak-orange); }
+.ak-tab:hover { color: var(--ak-text); background: var(--ak-brand-soft); }
+.ak-tab.ak-active { color: var(--ak-orange); border-bottom-color: var(--ak-orange); background: var(--ak-brand-soft); }
 
 /* ── Panel Body ── */
 .ak-body {
@@ -247,18 +260,18 @@
 .ak-feat-btn {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 5px; padding: 11px 8px;
-  background: var(--ak-bg2); border: 1px solid var(--ak-border);
+  background: var(--ak-control-bg); border: 1px solid var(--ak-border);
   border-radius: var(--ak-rs); color: var(--ak-text); font-family: inherit;
   font-size: 11px; cursor: pointer; transition: all 0.18s;
   text-align: center; line-height: 1.3; position: relative;
 }
 .ak-feat-btn:hover {
-  background: var(--ak-bg3); border-color: var(--ak-border-o);
+  background: var(--ak-brand-soft); border-color: var(--ak-brand-border);
   transform: translateY(-1px);
 }
 .ak-feat-btn:active { transform: translateY(0); background: var(--ak-orange-dim); }
 .ak-feat-btn.ak-on {
-  background: var(--ak-orange-dim); border-color: var(--ak-orange);
+  background: var(--ak-brand-surface); border-color: var(--ak-orange);
   color: var(--ak-orange);
 }
 .ak-feat-btn.ak-on::after {
@@ -272,12 +285,12 @@
 .ak-wide-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%; padding: 10px 14px;
-  background: var(--ak-orange-dim); border: 1px solid var(--ak-border-o);
+  background: var(--ak-brand-soft); border: 1px solid var(--ak-brand-border);
   border-radius: var(--ak-rs); color: var(--ak-text); font-family: inherit;
   font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
 }
 .ak-wide-btn:hover { background: var(--ak-orange-mid); border-color: var(--ak-orange); }
-.ak-wide-btn.ak-primary { background: var(--ak-orange); border-color: var(--ak-orange); color: #fff; }
+.ak-wide-btn.ak-primary { background: var(--ak-orange); border-color: var(--ak-orange); color: var(--ak-on-brand); }
 .ak-wide-btn.ak-primary:hover { background: var(--ak-orange-h); }
 
 /* ── Sliders ── */
@@ -300,17 +313,17 @@
 /* ── Select / Input ── */
 .ak-select, .ak-input {
   width: 100%; padding: 7px 10px;
-  background: var(--ak-bg3); border: 1px solid var(--ak-border);
+  background: var(--ak-control-bg); border: 1px solid var(--ak-border);
   border-radius: var(--ak-rs); color: var(--ak-text); font-family: inherit;
   font-size: 12px; outline: none; transition: border-color 0.15s;
 }
-.ak-select:focus, .ak-input:focus { border-color: var(--ak-border-o); }
+.ak-select:focus, .ak-input:focus { border-color: var(--ak-orange); box-shadow: 0 0 0 3px var(--ak-brand-soft); }
 .ak-select { cursor: pointer; }
 .ak-input-row { display: flex; gap: 6px; }
 .ak-input-row .ak-input { flex: 1; }
 .ak-save-btn {
   padding: 7px 14px; background: var(--ak-orange); border: none;
-  border-radius: var(--ak-rs); color: #fff; font-family: inherit;
+  border-radius: var(--ak-rs); color: var(--ak-on-brand); font-family: inherit;
   font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s;
   white-space: nowrap; flex-shrink: 0;
 }
@@ -399,7 +412,7 @@
   line-height: 1.55; max-width: 88%;
 }
 .ak-chat-bubble.ak-bot {
-  background: var(--ak-orange-dim); border: 1px solid rgba(240,90,0,0.2);
+  background: var(--ak-brand-surface); border: 1px solid var(--ak-brand-border);
   align-self: flex-start; border-bottom-left-radius: 3px;
 }
 .ak-chat-bubble.ak-user {
@@ -420,10 +433,10 @@
   color: var(--ak-text); font-family: inherit; font-size: 12px; outline: none;
   transition: border-color 0.15s;
 }
-.ak-chat-input:focus { border-color: var(--ak-border-o); }
+.ak-chat-input:focus { border-color: var(--ak-orange); box-shadow: 0 0 0 3px var(--ak-brand-soft); }
 .ak-chat-send {
   padding: 8px 14px; background: var(--ak-orange); border: none;
-  border-radius: var(--ak-rs); color: #fff; font-family: inherit;
+  border-radius: var(--ak-rs); color: var(--ak-on-brand); font-family: inherit;
   font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s;
 }
 .ak-chat-send:hover { background: var(--ak-orange-h); }
@@ -453,7 +466,7 @@
   color: var(--ak-text); font-family: monospace; font-size: 12px;
   outline: none; transition: border-color 0.15s;
 }
-.ak-api-input:focus { border-color: var(--ak-border-o); }
+.ak-api-input:focus { border-color: var(--ak-orange); box-shadow: 0 0 0 3px var(--ak-brand-soft); }
 
 /* ── Reading Progress Bar ── */
 #ak-read-progress {
@@ -476,10 +489,10 @@
 /* ── Reading Ruler ── */
 #ak-ruler {
   position: fixed; left: 0; right: 0; height: 36px;
-  background: rgba(240,90,0,0.10); pointer-events: none;
+  background: var(--ak-brand-soft); pointer-events: none;
   z-index: 2147483644; display: none;
-  border-top: 1px solid rgba(240,90,0,0.35);
-  border-bottom: 1px solid rgba(240,90,0,0.35);
+  border-top: 1px solid var(--ak-brand-border);
+  border-bottom: 1px solid var(--ak-brand-border);
 }
 
 /* ── Toast ── */
@@ -551,4 +564,35 @@
     right: auto;
     left: 16px;
   }
+}
+/* Default fallback */
+:root {
+  --a11y-widget-primary: #F05A00;
+  --a11y-widget-primary-hover: #d44e00;
+  --a11y-widget-bg: #0a0b0f;
+  --a11y-widget-text: #eaeaea;
+}
+
+/* Preset: Ocean */
+body[data-a11y-theme="ocean"] {
+  --a11y-widget-primary: #2563eb;
+  --a11y-widget-primary-hover: #1d4ed8;
+  --ak-bg: #0b1220;
+  --a11y-widget-text: #e0ecff;
+}
+
+/* Preset: Midnight */
+body[data-a11y-theme="midnight"] {
+  --a11y-widget-primary: #7c3aed;
+  --a11y-widget-primary-hover: #6d28d9;
+  --a11y-widget-bg: #0f0a1f;
+  --a11y-widget-text: #ece5ff;
+}
+
+/* Preset: Sunset */
+body[data-a11y-theme="sunset"] {
+  --a11y-widget-primary: #f43f5e;
+  --a11y-widget-primary-hover: #e11d48;
+  --a11y-widget-bg: #1a0b0f;
+  --a11y-widget-text: #ffe4e6;
 }
