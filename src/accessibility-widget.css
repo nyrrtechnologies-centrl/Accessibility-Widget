@@ -34,6 +34,10 @@
   /* accent stays consistent across both themes, unless overridden per-client */
   --ak-orange: #F05A00;
   --ak-orange-h: #D44E00;
+  /* lighter end of the brand gradient (FAB, logo tile, progress bar). Overridden
+     per-client too — a hardcoded second stop would leak orange into every
+     re-themed widget. */
+  --ak-orange-l: #ff8c42;
   --ak-orange-dim: rgba(240,90,0,0.12);
   --ak-orange-mid: rgba(240,90,0,0.22);
   --ak-brand-soft: rgba(240,90,0,0.08);
@@ -99,7 +103,7 @@
   right: 28px;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--ak-orange), #ff8c42);
+  background: linear-gradient(135deg, var(--ak-orange), var(--ak-orange-l));
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -183,7 +187,7 @@
 }
 .ak-logo {
   width: 28px; height: 28px;
-  background: linear-gradient(135deg,var(--ak-orange),#ff8c42);
+  background: linear-gradient(135deg,var(--ak-orange),var(--ak-orange-l));
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -475,7 +479,7 @@
   display: none;
 }
 #ak-read-progress-fill {
-  height: 100%; background: linear-gradient(90deg,var(--ak-orange),#ff8c42);
+  height: 100%; background: linear-gradient(90deg,var(--ak-orange),var(--ak-orange-l));
   width: 0%; transition: width 0.4s ease;
 }
 #ak-read-progress-label {
@@ -541,58 +545,61 @@
 
 /* ── Per-client position variant ──────────────────────────────
    Set via widget-core.js's applyBrandTheme(), which puts
-   data-ak-position="bottom-left" (or leaves it unset/"bottom-right")
-   on #ak-shell based on the client's configured theme.position. */
-#ak-shell[data-ak-position="bottom-left"] #ak-fab {
+   data-ak-position="bottom-right" | "bottom-left" | "top-right" | "top-left"
+   on #ak-shell from the client's configured widget_position column.
+   Matched on the suffix/prefix so each half (side, edge) composes. */
+
+/* Left-hand side */
+#ak-shell[data-ak-position$="-left"] #ak-fab,
+#ak-shell[data-ak-position$="-left"] #ak-fab-tooltip,
+#ak-shell[data-ak-position$="-left"] #ak-panel {
   right: auto;
   left: 28px;
 }
-#ak-shell[data-ak-position="bottom-left"] #ak-fab-tooltip {
-  right: auto;
-  left: 28px;
+
+/* Top edge — the panel has to open downward from the FAB instead of upward */
+#ak-shell[data-ak-position^="top-"] #ak-fab {
+  bottom: auto;
+  top: 28px;
 }
-#ak-shell[data-ak-position="bottom-left"] #ak-panel {
-  right: auto;
-  left: 28px;
+#ak-shell[data-ak-position^="top-"] #ak-fab-tooltip {
+  bottom: auto;
+  top: 92px;
 }
+#ak-shell[data-ak-position^="top-"] #ak-panel {
+  bottom: auto;
+  top: 96px;
+}
+#ak-shell[data-ak-position^="top-"] #ak-toast {
+  bottom: auto;
+  top: 96px;
+}
+/* The read-progress label lives top-right; move it clear of a top-right FAB */
+#ak-shell[data-ak-position="top-right"] #ak-read-progress-label {
+  right: auto;
+  left: 16px;
+}
+/* …and the section-tip lives bottom-left; move it clear of a bottom-left FAB */
+#ak-shell[data-ak-position="bottom-left"] #ak-section-tip {
+  left: auto;
+  right: 24px;
+}
+
 @media (max-width: 400px) {
-  #ak-shell[data-ak-position="bottom-left"] #ak-panel {
+  #ak-shell[data-ak-position$="-left"] #ak-panel {
     right: auto;
     left: 8px;
   }
-  #ak-shell[data-ak-position="bottom-left"] #ak-fab {
+  #ak-shell[data-ak-position$="-left"] #ak-fab {
     right: auto;
     left: 16px;
   }
-}
-/* Default fallback */
-:root {
-  --a11y-widget-primary: #F05A00;
-  --a11y-widget-primary-hover: #d44e00;
-  --a11y-widget-bg: #0a0b0f;
-  --a11y-widget-text: #eaeaea;
-}
-
-/* Preset: Ocean */
-body[data-a11y-theme="ocean"] {
-  --a11y-widget-primary: #2563eb;
-  --a11y-widget-primary-hover: #1d4ed8;
-  --ak-bg: #0b1220;
-  --a11y-widget-text: #e0ecff;
-}
-
-/* Preset: Midnight */
-body[data-a11y-theme="midnight"] {
-  --a11y-widget-primary: #7c3aed;
-  --a11y-widget-primary-hover: #6d28d9;
-  --a11y-widget-bg: #0f0a1f;
-  --a11y-widget-text: #ece5ff;
-}
-
-/* Preset: Sunset */
-body[data-a11y-theme="sunset"] {
-  --a11y-widget-primary: #f43f5e;
-  --a11y-widget-primary-hover: #e11d48;
-  --a11y-widget-bg: #1a0b0f;
-  --a11y-widget-text: #ffe4e6;
+  #ak-shell[data-ak-position^="top-"] #ak-fab {
+    bottom: auto;
+    top: 16px;
+  }
+  #ak-shell[data-ak-position^="top-"] #ak-panel {
+    bottom: auto;
+    top: 80px;
+  }
 }

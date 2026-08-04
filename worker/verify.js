@@ -103,7 +103,13 @@ function normalizeThemeConfig(client) {
     'theme_primary_color', 'theme_primaryColour', 'theme_color', 'themeColor',
     'custom_color', 'customColor', 'primary_color', 'primaryColor',
   ]);
-  const position = firstValue(client, ['theme_position', 'themePosition', 'position']);
+  const bgColor = firstValue(client, [
+    'theme_bg_color', 'themeBgColor', 'theme_background_color',
+    'bg_color', 'bgColor', 'background_color', 'backgroundColor',
+  ]);
+  const position = firstValue(client, [
+    'widget_position', 'widgetPosition', 'theme_position', 'themePosition', 'position',
+  ]);
   const mode = firstValue(client, ['theme_mode', 'themeMode', 'ui_theme', 'default_theme']);
   const logoUrl = firstValue(client, [
     'theme_logo_url', 'themeLogoUrl', 'logo_url', 'logoUrl', 'brand_logo_url', 'brandLogoUrl',
@@ -115,12 +121,22 @@ function normalizeThemeConfig(client) {
     // A populated primary colour is itself sufficient to activate a custom theme.
     if (!preset || theme.preset === 'default') theme.preset = 'custom';
   }
-  if (position) theme.position = String(position).trim().toLowerCase();
+  if (bgColor) theme.bgColor = normalizeHexColor(bgColor);
+  if (position) {
+    // Only the four positions the widget stylesheet actually implements; anything
+    // else falls through to the widget's own bottom-right default.
+    const value = String(position).trim().toLowerCase();
+    if (VALID_POSITIONS.has(value)) theme.position = value;
+  }
   if (mode) theme.mode = String(mode).trim().toLowerCase();
   if (logoUrl) theme.logoUrl = String(logoUrl).trim();
 
   return theme;
 }
+
+const VALID_POSITIONS = new Set([
+  'bottom-right', 'bottom-left', 'top-right', 'top-left',
+]);
 
 function firstValue(source, keys) {
   for (const key of keys) {

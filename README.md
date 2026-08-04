@@ -48,6 +48,28 @@ accessibility-widget/
 
 ---
 
+## 🎨 Per-client theming
+
+Licensed embeds are themed from the `widget_clients` row — no per-client CSS or
+re-embed. Run [`sql/widget-theming.sql`](sql/widget-theming.sql) once, then set the
+columns from the dashboard's **Widget** tab.
+
+| Column | What it changes |
+| --- | --- |
+| `theme_preset` | Accent preset: `default` / `ocean` / `midnight` / `custom` |
+| `theme_primary_color` | Accent hex when preset is `custom` (required by a DB check) |
+| `theme_bg_color` | Panel surface. Backgrounds, text, borders, tabs and control chrome are all derived from it for contrast |
+| `theme_logo_url` | Image replacing the default icon in the panel header |
+| `widget_position` | `bottom-right` / `bottom-left` / `top-right` / `top-left` |
+
+The chain is: column → `worker/verify.js` (`normalizeThemeConfig`) → `theme` JSON →
+`public-embed/loader.js` → `window.__WIDGET_CONFIG__.theme` → `applyBrandTheme()` in
+`widget-core.js` → CSS custom properties on `#ak-shell`. Adding a new themable
+property means touching all four. **Changes to `worker/verify.js` need a Wrangler
+deploy, and `dist/` needs `npm run build` plus a CDN publish, before clients see them.**
+
+---
+
 ## 🤖 AI Setup (Optional)
 
 To enable AI Summarization, Simplified Text, and Page Q&A:
