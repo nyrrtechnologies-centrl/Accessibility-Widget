@@ -81,6 +81,10 @@
   --ak-on-brand: #ffffff;
   --ak-r: 10px;
   --ak-rs: 6px;
+  /* Panel-wide font. Overridden inline by applyBrandTheme() when a client sets
+     theme_font_family; every rule below reads this var (or `inherit`s from
+     #ak-panel) instead of hardcoding 'Inter' so one override reaches the whole panel. */
+  --ak-font: 'Inter', system-ui, sans-serif;
 
   /* dark theme (default) — textured grayish-black, white text */
   --ak-bg: #111214;
@@ -164,7 +168,7 @@
   right: 28px;
   background: var(--ak-bg2);
   color: var(--ak-text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--ak-font);
   font-size: 12px;
   padding: 5px 10px;
   border-radius: 6px;
@@ -197,7 +201,7 @@
   display: none;
   flex-direction: column;
   overflow: hidden;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--ak-font);
   font-size: 13px;
   color: var(--ak-text);
   -webkit-font-smoothing: antialiased;
@@ -519,7 +523,7 @@
 #ak-read-progress-label {
   position: fixed; top: 8px; right: 16px;
   background: var(--ak-bg2); color: var(--ak-orange);
-  font-family: 'Inter',sans-serif; font-size: 11px;
+  font-family: var(--ak-font); font-size: 11px;
   padding: 3px 9px; border-radius: 20px; z-index: 2147483646;
   pointer-events: none; display: none; border: 1px solid var(--ak-border-o);
 }
@@ -537,7 +541,7 @@
 #ak-toast {
   position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
   background: var(--ak-bg4); border: 1px solid var(--ak-border-o);
-  color: var(--ak-text); font-family: 'Inter',sans-serif; font-size: 12px;
+  color: var(--ak-text); font-family: var(--ak-font); font-size: 12px;
   padding: 8px 16px; border-radius: 20px; z-index: 2147483647;
   pointer-events: none; white-space: nowrap; max-width: 280px;
   text-align: center; opacity: 0; transition: opacity 0.2s, transform 0.2s;
@@ -549,7 +553,7 @@
 #ak-section-tip {
   position: fixed; bottom: 24px; left: 24px;
   background: var(--ak-bg2); color: var(--ak-text);
-  font-family: 'Inter',sans-serif; font-size: 12px;
+  font-family: var(--ak-font); font-size: 12px;
   padding: 8px 14px; border-radius: 8px; border: 1px solid var(--ak-border-o);
   z-index: 2147483646; pointer-events: none; display: none;
 }

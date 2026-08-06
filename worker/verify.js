@@ -115,6 +115,21 @@ function normalizeThemeConfig(client) {
     'theme_logo_url', 'themeLogoUrl', 'logo_url', 'logoUrl', 'brand_logo_url', 'brandLogoUrl',
   ]);
 
+  // Advanced appearance — each one overrides a single step of the ramp the
+  // widget otherwise derives automatically from customColor/bgColor. Left
+  // null/absent on the row, they're simply omitted here and the widget
+  // falls back to its own derivation.
+  const accentLight = firstValue(client, ['theme_accent_light', 'themeAccentLight']);
+  const accentHover = firstValue(client, ['theme_accent_hover', 'themeAccentHover']);
+  const buttonTextColor = firstValue(client, ['theme_button_text_color', 'themeButtonTextColor']);
+  const tintStrength = firstValue(client, ['theme_tint_strength', 'themeTintStrength']);
+  const borderRadius = firstValue(client, ['theme_border_radius', 'themeBorderRadius']);
+  const buttonStyle = firstValue(client, ['theme_button_style', 'themeButtonStyle']);
+  const fontFamily = firstValue(client, ['theme_font_family', 'themeFontFamily']);
+  const successColor = firstValue(client, ['theme_success_color', 'themeSuccessColor']);
+  const errorColor = firstValue(client, ['theme_error_color', 'themeErrorColor']);
+  const infoColor = firstValue(client, ['theme_info_color', 'themeInfoColor']);
+
   if (preset) theme.preset = String(preset).trim().toLowerCase();
   if (customColor) {
     theme.customColor = normalizeHexColor(customColor);
@@ -130,6 +145,25 @@ function normalizeThemeConfig(client) {
   }
   if (mode) theme.mode = String(mode).trim().toLowerCase();
   if (logoUrl) theme.logoUrl = String(logoUrl).trim();
+  if (accentLight) theme.accentLight = normalizeHexColor(accentLight);
+  if (accentHover) theme.accentHover = normalizeHexColor(accentHover);
+  if (buttonTextColor) theme.buttonTextColor = normalizeHexColor(buttonTextColor);
+  if (tintStrength !== null && tintStrength !== undefined && tintStrength !== '') {
+    const value = Number(tintStrength);
+    if (Number.isFinite(value)) theme.tintStrength = value;
+  }
+  if (borderRadius !== null && borderRadius !== undefined && borderRadius !== '') {
+    const value = Number(borderRadius);
+    if (Number.isFinite(value)) theme.borderRadius = value;
+  }
+  if (buttonStyle) {
+    const value = String(buttonStyle).trim().toLowerCase();
+    if (VALID_BUTTON_STYLES.has(value)) theme.buttonStyle = value;
+  }
+  if (fontFamily) theme.fontFamily = String(fontFamily).trim();
+  if (successColor) theme.successColor = normalizeHexColor(successColor);
+  if (errorColor) theme.errorColor = normalizeHexColor(errorColor);
+  if (infoColor) theme.infoColor = normalizeHexColor(infoColor);
 
   return theme;
 }
@@ -137,6 +171,8 @@ function normalizeThemeConfig(client) {
 const VALID_POSITIONS = new Set([
   'bottom-right', 'bottom-left', 'top-right', 'top-left',
 ]);
+
+const VALID_BUTTON_STYLES = new Set(['gradient', 'solid']);
 
 function firstValue(source, keys) {
   for (const key of keys) {
