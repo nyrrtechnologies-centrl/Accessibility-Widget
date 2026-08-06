@@ -1,6 +1,6 @@
 (function(){"use strict";const a=window.__ak;if(!a)return;const s=a.S,f=document.currentScript;function A(){try{const e=f&&f.src;if(e)return e.replace(/widget-ui\.js(\?.*)?(#.*)?$/,"accessibility-widget.css")}catch(e){}return"accessibility-widget.css"}const M='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',z=`
 <div id="ak-shell" data-ak-theme="dark">
-<button id="ak-fab" aria-label="Open Accessibility Assistant" title="Accessibility Assistant">
+<button id="ak-fab" aria-label="Open Accessibility Assistant" title="Open the accessibility toolbar">
 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
 <circle cx="12" cy="5" r="1.5" fill="white" stroke="none"/>
 <path d="M5 9l7 1 7-1M12 10v5M9 20l3-5 3 5"/>
@@ -13,46 +13,46 @@
 <div><div class="ak-title">Accessibility Assistant</div><div class="ak-subtitle">Accessibility Widget</div></div>
 </div>
 <div class="ak-header-actions">
-<button class="ak-icon-btn" id="ak-theme-btn" title="Toggle light / dark theme" aria-label="Toggle theme">${I}</button>
-<button class="ak-icon-btn" id="ak-reset-btn" title="Reset all settings" aria-label="Reset all settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
-<button class="ak-icon-btn" id="ak-close-btn" title="Close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<button class="ak-icon-btn" id="ak-theme-btn" title="Switch the panel between light and dark mode" aria-label="Toggle theme">${I}</button>
+<button class="ak-icon-btn" id="ak-reset-btn" title="Clear every saved preference (except your API key) and reload the page" aria-label="Reset all settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+<button class="ak-icon-btn" id="ak-close-btn" title="Close this panel" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
 </div>
 <div class="ak-tabs" role="tablist">
-<button class="ak-tab ak-active" data-tab="read" role="tab">Read</button>
-<button class="ak-tab" data-tab="visual" role="tab">Visual</button>
-<button class="ak-tab" data-tab="text" role="tab">Text</button>
-<button class="ak-tab" data-tab="ai" role="tab">AI</button>
-<button class="ak-tab" data-tab="settings" role="tab">Settings</button>
+<button class="ak-tab ak-active" data-tab="read" role="tab" title="Text-to-speech: read the page aloud, follow along, or pick a section">Read</button>
+<button class="ak-tab" data-tab="visual" role="tab" title="Colour, contrast, focus ring and cursor size options">Visual</button>
+<button class="ak-tab" data-tab="text" role="tab" title="Font size, dyslexia-friendly font, spacing and voice controls">Text</button>
+<button class="ak-tab" data-tab="ai" role="tab" title="AI page summaries, text simplification and page Q&amp;A">AI</button>
+<button class="ak-tab" data-tab="settings" role="tab" title="Mistral API key and keyboard shortcuts">Settings</button>
 </div>
 <div class="ak-body">
 
 <div class="ak-section ak-visible" id="ak-tab-read">
 <div class="ak-section-label">Screen Reader</div>
 <div class="ak-btn-grid">
-<button class="ak-feat-btn" id="ak-read-page">Read Page</button>
-<button class="ak-feat-btn" id="ak-read-progress-btn">With Progress</button>
-<button class="ak-feat-btn" id="ak-read-section">Pick Section</button>
-<button class="ak-feat-btn ak-feat-stop" id="ak-stop-btn">Stop</button>
+<button class="ak-feat-btn" id="ak-read-page" title="Read the entire page aloud from the top, in one pass">Read Page</button>
+<button class="ak-feat-btn" id="ak-read-progress-btn" title="Read paragraph by paragraph, auto-scrolling and highlighting as it goes, with a progress bar">With Progress</button>
+<button class="ak-feat-btn" id="ak-read-section" title="Click any element on the page and only that element is read aloud">Pick Section</button>
+<button class="ak-feat-btn ak-feat-stop" id="ak-stop-btn" title="Stop reading immediately">Stop</button>
 </div>
 <div class="ak-section-label">Page Tools</div>
 <div class="ak-btn-grid">
-<button class="ak-feat-btn" id="ak-simplify">Simplify</button>
-<button class="ak-feat-btn" id="ak-ruler-btn">Ruler</button>
-<button class="ak-feat-btn" id="ak-links-btn">Highlight Links</button>
-<button class="ak-feat-btn" id="ak-heads-btn">Headings</button>
-<button class="ak-feat-btn" id="ak-imgs-btn">Hide Images</button>
-<button class="ak-feat-btn" id="ak-anim-btn">Stop Anims</button>
+<button class="ak-feat-btn" id="ak-simplify" title="Strip ads, sidebars and clutter, leaving a clean, centred, easy-to-read column">Simplify</button>
+<button class="ak-feat-btn" id="ak-ruler-btn" title="Show a horizontal guide that follows your cursor, to help track your place on the line">Ruler</button>
+<button class="ak-feat-btn" id="ak-links-btn" title="Outline every link on the page in blue so clickable text stands out">Highlight Links</button>
+<button class="ak-feat-btn" id="ak-heads-btn" title="Mark every heading with a coloured left border for faster scanning">Headings</button>
+<button class="ak-feat-btn" id="ak-imgs-btn" title="Hide all images and videos on the page">Hide Images</button>
+<button class="ak-feat-btn" id="ak-anim-btn" title="Freeze CSS animations and transitions site-wide, to reduce motion">Stop Anims</button>
 </div>
 <div class="ak-section-label">Zoom</div>
 <div class="ak-btn-grid-3">
-<button class="ak-feat-btn" id="ak-zoom-out">A\u2212</button>
-<button class="ak-feat-btn" id="ak-zoom-reset">100%</button>
-<button class="ak-feat-btn" id="ak-zoom-in">A+</button>
+<button class="ak-feat-btn" id="ak-zoom-out" title="Zoom out 10%">A\u2212</button>
+<button class="ak-feat-btn" id="ak-zoom-reset" title="Reset zoom to 100%">100%</button>
+<button class="ak-feat-btn" id="ak-zoom-in" title="Zoom in 10%">A+</button>
 </div>
 <div class="ak-slider-row" style="margin-top:4px">
 <label>Zoom</label>
-<input type="range" id="ak-zoom-slider" min="0.5" max="3" step="0.1" value="1">
+<input type="range" id="ak-zoom-slider" min="0.5" max="3" step="0.1" value="1" title="Drag to set zoom from 50% to 300%">
 <span class="ak-val" id="ak-zoom-val">100%</span>
 </div>
 </div>
@@ -60,83 +60,83 @@
 <div class="ak-section" id="ak-tab-visual">
 <div class="ak-section-label">Colour Mode</div>
 <div class="ak-btn-grid">
-<button class="ak-feat-btn" id="ak-contrast-none">Normal</button>
-<button class="ak-feat-btn" id="ak-contrast-high">High Contrast</button>
-<button class="ak-feat-btn" id="ak-contrast-dark">Dark</button>
-<button class="ak-feat-btn" id="ak-contrast-invert">Invert</button>
-<button class="ak-feat-btn" id="ak-contrast-sepia">Sepia</button>
-<button class="ak-feat-btn" id="ak-contrast-bw">B&amp;W</button>
+<button class="ak-feat-btn" id="ak-contrast-none" title="Turn off all colour filters and use the page's normal colours">Normal</button>
+<button class="ak-feat-btn" id="ak-contrast-high" title="Maximum contrast: yellow text on black, cyan links">High Contrast</button>
+<button class="ak-feat-btn" id="ak-contrast-dark" title="Invert and darken the page for a dark-mode look, even on light sites">Dark</button>
+<button class="ak-feat-btn" id="ak-contrast-invert" title="Invert every colour on the page">Invert</button>
+<button class="ak-feat-btn" id="ak-contrast-sepia" title="Warm, low-glare sepia tone to reduce eye strain">Sepia</button>
+<button class="ak-feat-btn" id="ak-contrast-bw" title="Remove all colour, grayscale only">B&amp;W</button>
 </div>
 <div class="ak-section-label">Focus &amp; Cursor</div>
 <div class="ak-btn-grid">
-<button class="ak-feat-btn" id="ak-focus-btn">Focus Ring</button>
-<button class="ak-feat-btn" id="ak-cursor-btn">Large Cursor</button>
+<button class="ak-feat-btn" id="ak-focus-btn" title="Draw a thick, high-visibility outline around whatever has keyboard focus">Focus Ring</button>
+<button class="ak-feat-btn" id="ak-cursor-btn" title="Cycle the mouse cursor size: normal \u2192 large \u2192 extra-large">Large Cursor</button>
 </div>
 </div>
 
 <div class="ak-section" id="ak-tab-text">
 <div class="ak-section-label">Font Size</div>
 <div class="ak-font-control">
-<button class="ak-font-btn" id="ak-font-down">A\u2212</button>
+<button class="ak-font-btn" id="ak-font-down" title="Decrease page font size by 10%">A\u2212</button>
 <div class="ak-font-display" id="ak-font-display">100%</div>
-<button class="ak-font-btn" id="ak-font-up">A+</button>
-<button class="ak-font-btn" id="ak-font-reset" title="Reset">Reset</button>
+<button class="ak-font-btn" id="ak-font-up" title="Increase page font size by 10%">A+</button>
+<button class="ak-font-btn" id="ak-font-reset" title="Reset font size to 100%">Reset</button>
 </div>
 <div class="ak-section-label">Font Style</div>
-<button class="ak-wide-btn" id="ak-dyslexic-btn">Dyslexia-Friendly Font</button>
-<select class="ak-select" id="ak-voice-select"><option value="">Default Voice</option></select>
+<button class="ak-wide-btn" id="ak-dyslexic-btn" title="Switch page and panel text to OpenDyslexic \u2014 a font with heavy-weighted letter bottoms designed to reduce letter confusion (b/d/p/q, n/u)">Dyslexia-Friendly Font</button>
+<select class="ak-select" id="ak-voice-select" title="Choose which voice reads text aloud"><option value="">Default Voice</option></select>
 <div class="ak-section-label">Line Spacing</div>
 <div class="ak-spacing-control">
-<button class="ak-spacing-btn ak-active" data-spacing="line-normal">Normal</button>
-<button class="ak-spacing-btn" data-spacing="line-relaxed">Relaxed</button>
-<button class="ak-spacing-btn" data-spacing="line-loose">Loose</button>
+<button class="ak-spacing-btn ak-active" data-spacing="line-normal" title="Standard line height">Normal</button>
+<button class="ak-spacing-btn" data-spacing="line-relaxed" title="1.8\xD7 line height for easier line tracking">Relaxed</button>
+<button class="ak-spacing-btn" data-spacing="line-loose" title="2.2\xD7 line height, maximum breathing room">Loose</button>
 </div>
 <div class="ak-section-label">Letter Spacing</div>
 <div class="ak-spacing-control">
-<button class="ak-spacing-btn ak-active" data-spacing="letter-normal">Normal</button>
-<button class="ak-spacing-btn" data-spacing="letter-wide">Wide</button>
-<button class="ak-spacing-btn" data-spacing="letter-wider">Wider</button>
+<button class="ak-spacing-btn ak-active" data-spacing="letter-normal" title="Standard letter spacing">Normal</button>
+<button class="ak-spacing-btn" data-spacing="letter-wide" title="Slightly wider letter spacing">Wide</button>
+<button class="ak-spacing-btn" data-spacing="letter-wider" title="Maximum letter spacing, reduces crowding">Wider</button>
 </div>
 <div class="ak-section-label">Speech Speed</div>
 <div class="ak-slider-row">
 <label>Speed</label>
-<input type="range" id="ak-rate" min="0.5" max="2" step="0.1" value="1">
+<input type="range" id="ak-rate" min="0.5" max="2" step="0.1" value="1" title="How fast text-to-speech reads, from 0.5\xD7 to 2\xD7">
 <span class="ak-val" id="ak-rate-val">1.0\xD7</span>
 </div>
 <div class="ak-slider-row">
 <label>Pitch</label>
-<input type="range" id="ak-pitch" min="0.5" max="2" step="0.1" value="1">
+<input type="range" id="ak-pitch" min="0.5" max="2" step="0.1" value="1" title="Voice pitch, lower or higher than default">
 <span class="ak-val" id="ak-pitch-val">1.0</span>
 </div>
 <div class="ak-slider-row">
 <label>Volume</label>
-<input type="range" id="ak-vol" min="0" max="1" step="0.05" value="1">
+<input type="range" id="ak-vol" min="0" max="1" step="0.05" value="1" title="Text-to-speech playback volume">
 <span class="ak-val" id="ak-vol-val">100%</span>
 </div>
-<button class="ak-wide-btn" id="ak-test-voice" style="margin-top:4px">Test Voice</button>
+<button class="ak-wide-btn" id="ak-test-voice" style="margin-top:4px" title="Play a short sample sentence with the current voice, speed, pitch and volume">Test Voice</button>
 </div>
 
 <div class="ak-section" id="ak-tab-ai">
 <div class="ak-section-label">AI Tools</div>
-<button class="ak-wide-btn ak-primary" id="ak-summarize-btn">Summarize This Page</button>
+<button class="ak-wide-btn ak-primary" id="ak-summarize-btn" title="AI reads the page and speaks a 3\u20135 sentence summary aloud">Summarize This Page</button>
 <div class="ak-summary-box" id="ak-summary-box"></div>
-<button class="ak-wide-btn" id="ak-simplify-text-btn">Simplify Selected Text</button>
+<button class="ak-wide-btn" id="ak-simplify-text-btn" title="Select text anywhere on the page first, then click this to rewrite it in plain language">Simplify Selected Text</button>
 <div class="ak-summary-box" id="ak-simplified-box"></div>
 <div class="ak-section-label">Page Q&amp;A</div>
 <div class="ak-chat-msgs" id="ak-chat-msgs">
 <div class="ak-chat-bubble ak-bot">Ask me anything about this page!</div>
 </div>
 <div class="ak-chat-input-row">
-<input class="ak-chat-input" id="ak-chat-input" placeholder="Ask a question\u2026" autocomplete="off">
-<button class="ak-chat-send" id="ak-chat-send">Ask</button>
+<input class="ak-chat-input" id="ak-chat-input" placeholder="Ask a question\u2026" autocomplete="off" title="Type a question about this page's content">
+<button class="ak-chat-send" id="ak-chat-send" title="Send your question to the AI assistant">Ask</button>
 </div>
 </div>
 
 <div class="ak-section" id="ak-tab-settings">
 <div class="ak-section-label">Mistral API Key</div>
 <div class="ak-api-row">
-<input type="password" class="ak-api-input" id="ak-api-key" placeholder="Enter Mistral API key\u2026">
-<button class="ak-save-btn" id="ak-api-save">Save</button>
+<input type="password" class="ak-api-input" id="ak-api-key" placeholder="Enter Mistral API key\u2026" title="Your key is stored only in this browser's local storage, never sent anywhere but Mistral">
+<button class="ak-save-btn" id="ak-api-save" title="Save the API key locally to enable AI Summarize, Simplify and Q&amp;A">Save</button>
 </div>
 <div class="ak-status" id="ak-api-status">
 <div class="ak-dot" id="ak-api-dot"></div>

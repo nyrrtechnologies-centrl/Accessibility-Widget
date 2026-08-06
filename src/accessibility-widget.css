@@ -12,7 +12,41 @@
    Only this stylesheet controls how the widget looks.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=OpenDyslexic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* NOTE: Google Fonts does NOT host OpenDyslexic — a family name in the
+   fonts.googleapis.com URL that Google doesn't carry is just silently
+   dropped from the response, so the old combined @import above never
+   actually loaded a dyslexia font; the toggle was falling back to the
+   browser's default sans-serif the whole time. OpenDyslexic is instead
+   self-hosted-by-CDN via Fontsource/jsDelivr below — a real, working
+   font whose letters have deliberately heavy-weighted bottoms and
+   lighter tops/counters, so similar shapes (b/d/p/q, n/u) are harder
+   to mentally rotate into one another. */
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-400-normal.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-400-normal.woff') format('woff');
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-700-normal.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-700-normal.woff') format('woff');
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-400-italic.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/fontsource/fonts/opendyslexic@5.3.0/latin-400-italic.woff') format('woff');
+}
 
 /* Baseline reset for the shadow host box itself. A page can still
    set layout properties (e.g. display:none) on the host element —
