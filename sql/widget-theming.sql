@@ -79,6 +79,16 @@ alter table widget_clients
   add column if not exists theme_button_text_color text
     check (theme_button_text_color is null or theme_button_text_color ~* '^#[0-9a-f]{6}$');
 
+-- Fill colour for the secondary/feature button grid, selects and inputs
+-- (--ak-control-bg) — the "Read Page", "Ruler", "Highlight Links" etc.
+-- buttons, font-size and line-spacing controls. Independent of
+-- theme_bg_color: without this set, that fill is just a shade of the panel
+-- background, so buttons can't be given their own colour separate from the
+-- surface they sit on. Set this to decouple the two.
+alter table widget_clients
+  add column if not exists theme_button_color text
+    check (theme_button_color is null or theme_button_color ~* '^#[0-9a-f]{6}$');
+
 -- Multiplier applied to every brand tint's alpha (soft/surface/border/glow
 -- washes behind tabs, cards and focus rings). 1.0 = current default depth;
 -- 0 removes tinting entirely; up to 2.0 doubles it.
@@ -144,6 +154,7 @@ alter table widget_clients
 --     theme_accent_light = '#8B8CF7',
 --     theme_accent_hover = '#4F46E5',
 --     theme_button_text_color = '#FFFFFF',
+--     theme_button_color = '#1E1B4B',
 --     theme_tint_strength = 1.25,
 --     theme_border_radius = 14,
 --     theme_button_style = 'gradient',
@@ -168,6 +179,7 @@ alter table widget_clients
 --     "accentLight": "#8B8CF7",          -- theme_accent_light
 --     "accentHover": "#4F46E5",          -- theme_accent_hover
 --     "buttonTextColor": "#FFFFFF",      -- theme_button_text_color
+--     "buttonColor": "#1E1B4B",          -- theme_button_color
 --     "tintStrength": 1.25,              -- theme_tint_strength
 --     "borderRadius": 14,                -- theme_border_radius
 --     "buttonStyle": "gradient",         -- theme_button_style
@@ -178,7 +190,7 @@ alter table widget_clients
 --   }
 -- }
 --
--- All ten "advanced appearance" fields are optional overrides — any left
+-- All eleven "advanced appearance" fields are optional overrides — any left
 -- null/absent are derived automatically from theme_primary_color and
 -- theme_bg_color exactly as before, so existing rows need no migration
 -- beyond running the `alter table` statements above.

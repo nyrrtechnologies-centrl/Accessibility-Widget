@@ -122,6 +122,7 @@ function normalizeThemeConfig(client) {
   const accentLight = firstValue(client, ['theme_accent_light', 'themeAccentLight']);
   const accentHover = firstValue(client, ['theme_accent_hover', 'themeAccentHover']);
   const buttonTextColor = firstValue(client, ['theme_button_text_color', 'themeButtonTextColor']);
+  const buttonColor = firstValue(client, ['theme_button_color', 'themeButtonColor']);
   const tintStrength = firstValue(client, ['theme_tint_strength', 'themeTintStrength']);
   const borderRadius = firstValue(client, ['theme_border_radius', 'themeBorderRadius']);
   const buttonStyle = firstValue(client, ['theme_button_style', 'themeButtonStyle']);
@@ -148,6 +149,7 @@ function normalizeThemeConfig(client) {
   if (accentLight) theme.accentLight = normalizeHexColor(accentLight);
   if (accentHover) theme.accentHover = normalizeHexColor(accentHover);
   if (buttonTextColor) theme.buttonTextColor = normalizeHexColor(buttonTextColor);
+  if (buttonColor) theme.buttonColor = normalizeHexColor(buttonColor);
   if (tintStrength !== null && tintStrength !== undefined && tintStrength !== '') {
     const value = Number(tintStrength);
     if (Number.isFinite(value)) theme.tintStrength = value;

@@ -417,7 +417,7 @@
 .ak-font-control { display: flex; align-items: center; gap: 8px; }
 .ak-font-btn {
   width: 32px; height: 32px; border-radius: var(--ak-rs);
-  background: var(--ak-bg3); border: 1px solid var(--ak-border);
+  background: var(--ak-control-bg); border: 1px solid var(--ak-border);
   color: var(--ak-text); font-family: inherit; font-size: 14px;
   font-weight: 700; cursor: pointer; transition: all 0.15s;
   display: flex; align-items: center; justify-content: center;
@@ -434,7 +434,7 @@
 .ak-spacing-control { display: flex; align-items: center; gap: 6px; }
 .ak-spacing-btn {
   padding: 5px 10px; border-radius: var(--ak-rs);
-  background: var(--ak-bg3); border: 1px solid var(--ak-border);
+  background: var(--ak-control-bg); border: 1px solid var(--ak-border);
   color: var(--ak-text); font-family: inherit; font-size: 11px;
   cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
